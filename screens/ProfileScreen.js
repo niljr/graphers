@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, ToastAndroid } from 'react-native';
+import { View, ToastAndroid, ActivityIndicator } from 'react-native';
 import { Container, Header, Content, Button, Text, Tabs, Tab, Left, Body, Right, Icon, Spinner } from 'native-base';
 import * as ImagePicker from 'expo-image-picker';
 import firebase from 'firebase'
@@ -10,40 +10,23 @@ import Profile from '../components/Profile';
 import UploadImage from '../components/UploadImage';
 
 const ProfileScreen = () => {
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [userId, setUserId] = useState('');
     const [profile, setProfile] = useState({
-        basicInfoData: {
-            firstName: 'Juan',
-            lastName: 'Tamad',
-            address: 'Iloilo',
-            uri: 'https://i.imgur.com/TkIrScD.png',
-            downloadUrl: 'https://i.imgur.com/TkIrScD.png',
-            role: '',
-            email: '',
-            rate: '3000'
-        },
-        scheduleData: [
-            { id: 1, value: 'Monday', isChecked: false },
-            { id: 2, value: 'Tuesday', isChecked: false },
-            { id: 3, value: 'Wednesday', isChecked: false },
-            { id: 4, value: 'Thursday', isChecked: false },
-            { id: 5, value: 'Friday', isChecked: false },
-            { id: 6, value: 'Saturday', isChecked: false },
-            { id: 7, value: 'Sunday', isChecked: false }
-        ],
-        portfolio: {
-            id: '',
-            base64: '',
-            name: '',
-            uri: 'https://i.imgur.com/TkIrScD.png',
-            downloadUrl: 'https://i.imgur.com/TkIrScD.png'
-        }
-
+        id: '',
+        firstName: 'Juan',
+        lastName: 'Tamad',
+        address: 'Iloilo',
+        avatar: 'https://i.imgur.com/TkIrScD.png',
+        role: '',
+        email: '',
+        category: '',
+        rate: '',
+        schedules: [],
+        portfolio_url: 'https://i.imgur.com/TkIrScD.png'
     });
 
     useEffect(() => {
-        setLoading(true);
         const fetchData = () => {
             firebase.auth().onAuthStateChanged(async user => {
                 if (user) {
@@ -71,6 +54,7 @@ const ProfileScreen = () => {
             })
         }
         fetchData()
+        setLoading(false)
     }, []);
 
     openImagePickerAsync = async (key) => {
@@ -84,8 +68,8 @@ const ProfileScreen = () => {
 
         let pickerResult = await ImagePicker.launchImageLibraryAsync({
             // allowsEditing: true,
-            base64: true,
-            aspect: [4, 3]
+            // base64: true,
+            // aspect: [4, 3]
         });
 
         if (pickerResult.cancelled === true) {
@@ -98,19 +82,10 @@ const ProfileScreen = () => {
         let result = {}
 
         if (key === 'portfolio') {
-            result = {
-                id: generatedId,
-                name: name,
-                downloadUrl: pickerResult.uri,
-            }
+            handleProfileData('portfolio_url', pickerResult.uri)
         } else {
-            result = {
-                ...profile.basicInfoData,
-                downloadUrl: pickerResult.uri
-            };
+            handleProfileData('avatar', pickerResult.uri)
         }
-
-        handleProfileData(key, result)
     }
 
     handleProfileData = (key, data) => {
@@ -124,21 +99,18 @@ const ProfileScreen = () => {
     handleUpload = async () => {
         setLoading(true);
 
-        const basicDataUrl = await UploadImage(profile.basicInfoData)
-        const portfolioDataUrl = await UploadImage(profile.portfolio)
-        console.log('1')
+        const basicDataUrl = await UploadImage(profile.avatar)
+        const portfolioDataUrl = await UploadImage(profile.portfolio_url)
+        console.log(portfolioDataUrl)
         setProfile({
             ...profile,
-            basicInfoData: {
-                ...profile.basicData,
-                downloadUrl: basicDataUrl.url
-            },
-            portfolio: {
-                ...profile.portfolio,
-                downloadUrl: portfolioDataUrl.url
-            }
+            avatar: basicDataUrl.url,
+
         })
-        console.log('2')
+        setProfile({
+            ...profile,
+            portfolio_url: portfolioDataUrl.url
+        })
         // const data = await UploadImage(profile.portfolio)
     };
 
@@ -146,12 +118,10 @@ const ProfileScreen = () => {
 
         setLoading(true);
         handleUpload();
-        console.log('3')
         try {
             await firebase.firestore().collection("users").doc(userId).set({
                 ...profile
             })
-            console.log('4')
             ToastAndroid.showWithGravityAndOffset(
                 'Successfully Saved!',
                 ToastAndroid.LONG,
@@ -161,9 +131,7 @@ const ProfileScreen = () => {
             );
         } catch (err) {
             console.log(err)
-            console.log('5')
         }
-        console.log('6')
         setLoading(false);
     }
 
@@ -184,6 +152,21 @@ const ProfileScreen = () => {
                     </Right>
                 </Header>
                 <Content >
+                    {setLoading ?
+                        <ActivityIndicator
+                            style={{
+                                flex: 1,
+                                left: 0,
+                                right: 0,
+                                top: 0,
+                                bottom: 0,
+                                position: 'absolute',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                            size="large"
+                        />
+                        : null}
                     <Profile
                         handleProfileData={handleProfileData}
                         profileData={profile}

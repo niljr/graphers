@@ -2,31 +2,45 @@ import React, { Component } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { ListItem, CheckBox, Text, Body, Button } from 'native-base';
 
-const ScheduleInfo = (props) => {
+const ScheduleInfo = ({ schedules, handleProfileData }) => {
+    const isChecked = (id) => (schedules.includes(id));
 
-    handleChange = id => {
+    const scheduleData = [
+        { id: 1, value: 'Monday' },
+        { id: 2, value: 'Tuesday' },
+        { id: 3, value: 'Wednesday' },
+        { id: 4, value: 'Thursday' },
+        { id: 5, value: 'Friday' },
+        { id: 6, value: 'Saturday' },
+        { id: 7, value: 'Sunday' }
+    ],
 
-        const changedCheckBox = props.scheduleData.find((cb) => cb.id === id);
+        handleChange = id => {
 
-        changedCheckBox.isChecked = !changedCheckBox.isChecked;
+            let selected = schedules;
 
-        const checkboxes = Object.assign(props.scheduleData, changedCheckBox);
+            if (isChecked(id)) {
+                const index = selected.findIndex(item => item === id);
+                selected.splice(index, 1);
+            } else {
+                selected.push(id)
+            }
 
-        props.handleProfileData('scheduleData', checkboxes);
+            handleProfileData('schedules', selected);
 
-    }
+        }
+
     return (
         <View>
             {
-                props.scheduleData.map((day, key) => (
+                scheduleData.map((day, key) => (
                     <ListItem key={day.id} >
-                        <CheckBox checked={day.isChecked} onPress={() => handleChange(day.id)} />
+                        <CheckBox checked={isChecked(day.id)} onPress={() => handleChange(day.id)} />
                         <Body>
                             <Text>{day.value}</Text>
                         </Body>
                     </ListItem>
-                )
-                )
+                ))
             }
         </View>
     )

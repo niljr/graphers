@@ -1,20 +1,24 @@
 import React, { useEffect } from 'react'
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import firebase from 'firebase';
+import firebase from 'firebase'
+import '@firebase/firestore';
 
 const LoadingScreen = props => {
 
     useEffect(() => {
         checkIfLoggedin();
+        // props.navigation.navigate('HomeScreen');
     }, [])
 
-    checkIfLoggedin = () => {
-        firebase.auth().onAuthStateChanged(async user => {
+    const checkIfLoggedin = () => {
+        firebase.auth().onAuthStateChanged(user => {
             if (user) {
-                const docRef = await firebase.firestore().collection("users").doc(user.providerData[0].uid);
+                const docRef = firebase.firestore().collection("users").doc(user.providerData[0].uid);
                 docRef.get().then(function (doc) {
-                    if (doc.data().basicInfoData.role) {
-                        props.navigation.navigate('HomeScreen');
+                    if (doc.data().role) {
+                        props.navigation.navigate('HomeScreen', {
+                            uri: doc.data().avatar
+                        });
                     } else {
                         props.navigation.navigate('UserRoleScreen');
                     }

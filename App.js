@@ -5,7 +5,6 @@ import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import firebase from 'firebase'
 
 import BottomTabNavigator from './navigation/BottomTabNavigator';
@@ -13,10 +12,12 @@ import useLinking from './navigation/useLinking';
 import LoginScreen from './screens/LoginScreen';
 import LoadingScreen from './screens/LoadingScreen';
 import UserRoleScreen from './screens/UserRoleScreen';
-import HomeScreen from './screens/HomeScreen';
+import BookModalScreen from './screens/BookModalScreen';
+import GrapherInfoScreen from './screens/GrapherInfoScreen';
 import Config from './config';
 
-const Stack = createStackNavigator();
+const MainStack = createStackNavigator();
+const RootStack = createStackNavigator();
 
 firebase.initializeApp(Config);
 const db = firebase.firestore()
@@ -62,31 +63,27 @@ export default function App(props) {
     return (
       <View style={styles.container}>
         {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-        <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
-          <Stack.Navigator screenOptions={{
-            headerShown: false
-          }}>
-            <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
-            <Stack.Screen name="LoginScreen" component={LoginScreen} />
-            <Stack.Screen name="UserRoleScreen" component={UserRoleScreen} />
-            {/* <Stack.Screen name="HomeScreen" component={HomeScreen} /> */}
-            <Stack.Screen name="HomeScreen" component={BottomTabNavigator} />
-          </Stack.Navigator>
-          {/* <AppNavigator /> */}
+        <NavigationContainer ref={containerRef} initialState={initialNavigationState} >
+          <RootStack.Navigator mode="modal" screenOptions={{ headerShown: false }} >
+            <RootStack.Screen name="Main" component={MainStackScreen} options={{ headerShown: false }} />
+            <RootStack.Screen name="BookModalScreen" component={BookModalScreen} />
+          </RootStack.Navigator>
         </NavigationContainer>
       </View>
     );
   }
 }
-
-// const AppSwitchNavigator = createSwitchNavigator({
-//   LoadingScreen: LoadingScreen,
-//   LoginScreen: LoginScreen,
-//   HomeScreen: HomeScreen
-// })
-
-// const AppNavigator = createAppContainer
-//   (AppSwitchNavigator);
+const MainStackScreen = () => {
+  return (
+    <MainStack.Navigator screenOptions={{ headerShown: false }}>
+      <MainStack.Screen name="LoadingScreen" component={LoadingScreen} />
+      <MainStack.Screen name="LoginScreen" component={LoginScreen} />
+      <MainStack.Screen name="UserRoleScreen" component={UserRoleScreen} />
+      <MainStack.Screen name="GrapherInfoScreen" component={GrapherInfoScreen} />
+      <MainStack.Screen name="HomeScreen" component={BottomTabNavigator} />
+    </MainStack.Navigator>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {

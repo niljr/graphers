@@ -1,43 +1,27 @@
 import React from 'react';
-import { Image } from 'react-native'
+import { Image, View, ScrollView, StyleSheet } from 'react-native'
 import { Header, Text, Content, Card, CardItem, Thumbnail, Button, Icon, Left, Body, Right } from 'native-base';
+import Grapher from './Grapher';
 
-const Home = () => {
+const Home = (props) => {
     return (
-        <Content>
-            <Card>
-                <CardItem>
-                    <Left>
-                        <Thumbnail source={{ uri: 'Image URL' }} />
-                        <Body>
-                            <Text>NativeBase</Text>
-                            <Text note>GeekyAnts</Text>
-                        </Body>
-                    </Left>
-                </CardItem>
-                <CardItem cardBody>
-                    <Image source={{ uri: 'Image URL' }} style={{ height: 200, width: null, flex: 1 }} />
-                </CardItem>
-                <CardItem>
-                    <Left>
-                        <Button transparent>
-                            <Icon active name="thumbs-up" />
-                            <Text>12 Likes</Text>
-                        </Button>
-                    </Left>
-                    <Body>
-                        <Button transparent>
-                            <Icon active name="chatbubbles" />
-                            <Text>4 Comments</Text>
-                        </Button>
-                    </Body>
-                    <Right>
-                        <Text>11h ago</Text>
-                    </Right>
-                </CardItem>
-            </Card>
-        </Content>
+        <View style={styles.container}>
+            <ScrollView contentContainerStyle={styles.contentContainer}>
+                {props.graphers.map((grapher, key) => <Grapher key={key} data={grapher} nextScreen={props.nextScreen} />)}
+            </ScrollView>
+        </View>
     );
-}
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        // marginHorizontal: 5,
+        backgroundColor: '#fff',
+    },
+    contentContainer: {
+        flexGrow: 1,
+    }
+});
 
 export default Home;

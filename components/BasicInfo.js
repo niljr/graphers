@@ -2,49 +2,49 @@ import React from 'react'
 import { StyleSheet, Image, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { Input, Item, Form, Button } from 'native-base';
 
-const BasicInfo = ({ handleProfileData, basicInfoData, openImagePickerAsync }) => {
+const BasicInfo = ({ handleProfileData, profileData, openImagePickerAsync }) => {
     return (
         <ScrollView contentContainerStyle={styles.contentContainer}>
             <Form style={styles.container} >
-                <Image source={{ uri: basicInfoData.downloadUrl }} style={styles.logo} />
+                <Image source={{ uri: profileData.avatar }} style={styles.logo} />
                 <Text style={styles.instructions}>
                     Upload your Avatar
                     </Text>
 
-                <Button onPress={() => openImagePickerAsync('basicInfoData')} style={styles.button}>
+                <Button onPress={() => openImagePickerAsync('avatar')} style={styles.button}>
                     <Text style={styles.buttonText}>Pick a photo</Text>
                 </Button>
 
                 <Item rounded style={styles.item}>
                     <Input
-                        onChangeText={(firstName) => handleProfileData('basicInfoData', { ...basicInfoData, firstName })}
+                        onChangeText={(firstName) => handleProfileData('firstName', { ...profileData, firstName })}
                         placeholder='First Name'
                         style={styles.input}
-                        value={basicInfoData.firstName} />
+                        value={profileData.firstName} />
                 </Item>
                 <Item rounded style={styles.item}>
                     <Input
-                        onChangeText={(lastName) => handleProfileData('basicInfoData', { ...basicInfoData, lastName })}
+                        onChangeText={(lastName) => handleProfileData('lastName', { ...profileData, lastName })}
                         placeholder='Last Name'
                         style={styles.input}
-                        value={basicInfoData.lastName}
+                        value={profileData.lastName}
                     />
                 </Item>
                 <Item rounded style={styles.item}>
                     <Input
-                        onChangeText={(address) => handleProfileData('basicInfoData', { ...basicInfoData, address })}
+                        onChangeText={(address) => handleProfileData('address', { ...profileData, address })}
                         placeholder='Address'
                         style={styles.input}
-                        value={basicInfoData.address}
+                        value={profileData.address}
                     />
                 </Item>
                 <Item rounded style={styles.item}>
                     <Input
-                        onChangeText={(rate) => handleProfileData('basicInfoData', { ...basicInfoData, rate })}
+                        onChangeText={(rate) => handleProfileData('rate', { ...profileData, rate })}
                         placeholder='Rate'
                         style={styles.input}
                         type='number'
-                        value={basicInfoData.rate}
+                        value={profileData.rate}
                     />
                 </Item>
             </Form>

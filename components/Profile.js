@@ -6,26 +6,33 @@ import BasicInfo from './BasicInfo';
 import ScheduleInfo from './ScheduleInfo';
 import Portfolio from './Portfolio';
 
+import RenderGrapherTab from './RenderGrapherTab';
+import RenderClientTab from './RenderClientTab';
+
 const Profile = ({ profileData, handleProfileData, openImagePickerAsync }) => {
+
     return (
         <Tabs>
             <Tab heading="Basic">
                 <BasicInfo
                     handleProfileData={handleProfileData}
-                    basicInfoData={profileData.basicInfoData}
+                    profileData={profileData}
                     openImagePickerAsync={openImagePickerAsync} />
+                {
+                    profileData.role === 'client' ?
+                        <RenderClientTab
+                            handleProfileData={handleProfileData}
+                            profileData={profileData}
+                            openImagePickerAsync={openImagePickerAsync} />
+                        :
+                        <RenderGrapherTab
+                            handleProfileData={handleProfileData}
+                            profileData={profileData}
+                            openImagePickerAsync={openImagePickerAsync} />
+                }
+
             </Tab>
-            <Tab heading="Schedule">
-                <ScheduleInfo
-                    handleProfileData={handleProfileData}
-                    scheduleData={profileData.scheduleData} />
-            </Tab>
-            <Tab heading="Porfolio">
-                <Portfolio
-                    handleProfileData={handleProfileData}
-                    portfolioData={profileData.portfolio}
-                    openImagePickerAsync={openImagePickerAsync} />
-            </Tab>
+
         </Tabs>
     )
 }

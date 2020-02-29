@@ -5,10 +5,10 @@ import { Input, Item, Form, Label } from 'native-base';
 
 import GalleryList from './GalleryList';
 
-const Portfolio = ({ handleProfileData, portfolioData, openImagePickerAsync }) => {
+const Portfolio = ({ handleProfileData, portfolio_url, openImagePickerAsync }) => {
     return (
         <View style={styles.container}>
-            <Image source={{ uri: portfolioData.downloadUrl }} style={styles.logo} />
+            <Image source={{ uri: portfolio_url }} style={styles.logo} />
             <Text style={styles.instructions}>
                 To share a photo from your phone with a friend, just press the button below!
             </Text>
@@ -18,7 +18,7 @@ const Portfolio = ({ handleProfileData, portfolioData, openImagePickerAsync }) =
             </TouchableOpacity>
 
             {/* {
-                portfolioData.map((img, key) => (
+                profileData.map((img, key) => (
                     <GalleryList
                         key={key}
                         imgData={img}

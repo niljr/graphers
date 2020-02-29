@@ -9,28 +9,22 @@ const UserRoleScreen = (props) => {
     const [category, setCategory] = useState('');
     const { email, id, givenName, familyName, photoUrl } = props.route.params.user;
 
-
-    // useEffect({
-
-    // }, [])
-
     userRole = async (role) => {
         const docRef = await firebase.firestore().collection("users").doc(id);
         docRef.get().then((doc) => {
-            if (doc.data().basicInfoData.role) {
+            if (doc.data().role) {
                 props.navigation.navigate('HomeScreen');
             } else {
                 firebase.firestore().collection("users").doc(id).set({
-                    basicInfoData: {
-                        firstName: givenName,
-                        lastName: familyName,
-                        email: email,
-                        downloadUrl: photoUrl,
-                        rate: '',
-                        role,
-                        category,
-                        createdAt: Date.now()
-                    }
+                    id,
+                    firstName: givenName,
+                    lastName: familyName,
+                    email: email,
+                    avatar: photoUrl,
+                    rate: '',
+                    role,
+                    category,
+                    createdAt: Date.now()
                 })
 
                 // doc.data() will be undefined in this case
@@ -45,7 +39,9 @@ const UserRoleScreen = (props) => {
         await setCategory(d)
         userRole('grapher');
         setModalCategory(false);
-        props.navigation.navigate('HomeScreen');
+        props.navigation.navigate('HomeScreen', {
+            uri: photoUrl
+        });
     }
 
     return (

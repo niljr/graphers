@@ -1,64 +1,110 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View, RefreshControl } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Container, Header } from 'native-base';
+import { Container, Header, Right, Icon, Button, Left, Thumbnail } from 'native-base';
 import * as WebBrowser from 'expo-web-browser';
 import firebase from 'firebase'
 import '@firebase/firestore';
-import "firebase/storage"
-
-import Config from '../config';
-// const db = firebase.firestore()
-// firebase.initializeApp(Config);
-
 import { MonoText } from '../components/StyledText';
 import Home from '../components/Home';
 
-export default function HomeScreen() {
-  // const [profile, setProfile] = useState({});
+// static.navigationOptions = {
+//   header: null,
+// };
+const HomeScreen = (props) => {
+  const [refresh, setRefresh] = useState(false);
+  const [isBook, setIsBook] = useState(false);
+  const [graphers, setGraphers] = useState([]);
+  const [userUri, setUserUri] = useState('../assets/images/icon.png');
 
   // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const docRef = await db.collection("users").doc("mario");
-
-  //     docRef.get().then(function (doc) {
-  //       if (doc.exists) {
-  //         // console.log("Document data:", doc.data());
-  //         setProfile(doc.data());
-  //       } else {
-  //         // doc.data() will be undefined in this case
-  //         console.log("No such document!");
-  //       }
-  //     }).catch(function (error) {
-  //       console.log("Error getting document:", error);
-  //     });
-
-  //   }
-  //   fetchData()
+  //   firebase.auth().onAuthStateChanged(async user => {
+  //     if (user) {
+  //       const docRef = await db.collection("users").doc(user.providerData[0].uid);
+  //       docRef.get().then(function (doc) {
+  //         setUserUri(doc.data().basicInfoData.downloadUrl);
+  //       }).catch(function (error) {
+  //         console.log("Error getting document:", error);
+  //       });
+  //     } else {
+  //       props.navigation.navigate('LoginScreen');
+  //     }
+  //   })
   // }, []);
+
+
+  useEffect(() => {
+    const docRef = firebase.firestore().collection("users");
+    docRef.where('category', '==', 'photographer').get().then(function (querySnapshot) {
+      let graphersArr = [];
+      querySnapshot.forEach(function (doc) {
+        // doc.data() is never undefined for query doc snapshots
+        let data = doc.data();
+        graphersArr.push(data)
+        // console.log(doc.id, " => ", doc.data());
+      });
+      setGraphers(graphersArr);
+    }).catch(function (error) {
+      console.log("Error getting document:", error);
+    });
+  }, []);
+
+  queryGraphersList = async () => {
+    // const docRef = await firebase.firestore().collection("users");
+    // docRef.where('category', '==', 'photographer').get().then(function (querySnapshot) {
+    //   querySnapshot.forEach(function (doc) {
+    //     // doc.data() is never undefined for query doc snapshots
+    //   });
+    // }).catch(function (error) {
+    //   console.log("Error getting document:", error);
+    // });
+  }
+
+  onRefresh = () => {
+    setRefresh(true)
+    queryGraphersList();
+    setRefresh(false)
+  }
+
+  nextScreen = (screen, data) => {
+    props.navigation.navigate(screen, {
+      grapherData: data
+    });
+  }
 
   return (
     <View >
-      <ScrollView contentContainerStyle={styles.contentContainer}>
-        {/* <View style={styles.welcomeContainer}> */}
-        {/* <Image
-          source={
-            __DEV__
-              ? require('../assets/images/robot-dev.png')
-              : require('../assets/images/robot-prod.png')
-          }
-          style={styles.welcomeImage}
-        /> */}
+      <ScrollView
+        contentContainerStyle={styles.contentContainer}
+        refreshControl={
+          <RefreshControl
+            refreshing={refresh}
+            onRefresh={onRefresh}
+          />
+        }
+      >
         <Container style={styles.container}>
-          <Header />
-          <Home />
-        </Container>
+          <Header>
+            <Left>
+              <Button transparent onPress={() => props.navigation.navigate('BookModalScreen')}>
+                <Icon name="search" />
+                <Text>Book</Text>
+              </Button>
+            </Left>
+            <Right>
+              <Thumbnail small source={{ uri: userUri }} />
+            </Right>
+          </Header>
 
-        {/* </View> */}
+
+          <Home nextScreen={nextScreen} graphers={graphers} />
+        </Container>
       </ScrollView>
     </View>
   );
 }
+
+export default HomeScreen
 
 HomeScreen.navigationOptions = {
   header: null,
@@ -87,103 +133,15 @@ function DevelopmentModeNotice() {
   }
 }
 
-function handleLearnMorePress() {
-  WebBrowser.openBrowserAsync('https://docs.expo.io/versions/latest/workflow/development-mode/');
-}
-
-function handleHelpPress() {
-  WebBrowser.openBrowserAsync(
-    'https://docs.expo.io/versions/latest/get-started/create-a-new-app/#making-your-first-change'
-  );
-}
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     // marginHorizontal: 5,
     backgroundColor: '#fff',
-    marginTop: 22
+    marginTop: 22,
+
   },
-  developmentModeText: {
-    marginBottom: 20,
-    color: 'rgba(0,0,0,0.4)',
-    fontSize: 14,
-    lineHeight: 19,
-    textAlign: 'center',
-  },
-  // contentContainer: {
-  //   paddingTop: 30,
-  // },
-  welcomeContainer: {
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  welcomeImage: {
-    width: 100,
-    height: 80,
-    resizeMode: 'contain',
-    marginTop: 3,
-    marginLeft: -10,
-  },
-  getStartedContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50,
-  },
-  homeScreenFilename: {
-    marginVertical: 7,
-  },
-  codeHighlightText: {
-    color: 'rgba(96,100,109, 0.8)',
-  },
-  codeHighlightContainer: {
-    backgroundColor: 'rgba(0,0,0,0.05)',
-    borderRadius: 3,
-    paddingHorizontal: 4,
-  },
-  getStartedText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    lineHeight: 24,
-    textAlign: 'center',
-  },
-  tabBarInfoContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOffset: { width: 0, height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
-      },
-      android: {
-        elevation: 20,
-      },
-    }),
-    alignItems: 'center',
-    backgroundColor: '#fbfbfb',
-    paddingVertical: 20,
-  },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    textAlign: 'center',
-  },
-  navigationFilename: {
-    marginTop: 5,
-  },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: 'center',
-  },
-  helpLink: {
-    paddingVertical: 15,
-  },
-  helpLinkText: {
-    fontSize: 14,
-    color: '#2e78b7',
-  },
+  contentContainer: {
+    flex: 1,
+  }
 });

@@ -63,16 +63,14 @@ export default function LoginScreen(props) {
                 onSignIn(result);
                 const { email, id, givenName, familyName, photoUrl } = result.user;
                 firebase.firestore().collection("users").doc(id).set({
-                    basicInfoData: {
-                        firstName: givenName,
-                        lastName: familyName,
-                        email: email,
-                        downloadUrl: photoUrl,
-                        rate: '',
-                        role: '',
-                        category: '',
-                        createdAt: Date.now()
-                    }
+                    firstName: givenName,
+                    lastName: familyName,
+                    email: email,
+                    avatar: photoUrl,
+                    rate: '',
+                    role: '',
+                    category: '',
+                    createdAt: Date.now()
                 });
                 props.navigation.navigate("UserRoleScreen", {
                     user: result.user
