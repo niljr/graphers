@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { Button } from 'native-base';
-import Swiper from 'react-native-swiper'
+// // import Swiper from 'react-native-swiper'
 
 const Signup = ({ user, handleUserUpdate, handleSave }) => {
     console.log(user)
@@ -25,7 +25,7 @@ const Signup = ({ user, handleUserUpdate, handleSave }) => {
                 </Button>
             </>
             {user.role === 'grapher' && <>
-                <Text style={{...styles.title, marginTop: 30 }}>Which Grapher are you?</Text>
+                <Text style={{ ...styles.title, marginTop: 30 }}>Which Grapher are you?</Text>
                 <Button
                     style={styles.button}
                     bordered={user.category !== 'videographer'}

@@ -94,7 +94,7 @@ const MyBookings = (props) => {
                 }
             >
                 <Content>
-                    <List>
+                    {/* <List>
                         {clients.map((key, data) => {
                             // console.log(data)
                             // getClientData(data.clientID);
@@ -115,7 +115,7 @@ const MyBookings = (props) => {
                                 </ListItem>
                             )
                         })}
-                    </List>
+                    </List> */}
                 </Content>
             </ScrollView>
         </Container>

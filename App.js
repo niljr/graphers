@@ -13,7 +13,7 @@ import LoginScreen from './screens/LoginScreen';
 import LoadingScreen from './screens/LoadingScreen';
 import UserRoleScreen from './screens/UserRoleScreen';
 import BookModalScreen from './screens/BookModalScreen';
-import SignUpScreen from './screens/SignUpScreen';
+import SignupScreen from './screens/SignupScreen';
 import BookingModalScreen from './screens/BookingModalScreen';
 import GrapherInfoScreen from './screens/GrapherInfoScreen';
 import Config from './config';
@@ -82,7 +82,7 @@ const MainStackScreen = () => {
       <MainStack.Screen name="LoadingScreen" component={LoadingScreen} />
       <MainStack.Screen name="LoginScreen" component={LoginScreen} />
       <MainStack.Screen name="UserRoleScreen" component={UserRoleScreen} />
-      <MainStack.Screen name="SignUpScreen" component={SignUpScreen}
+      <MainStack.Screen name="SignupScreen" component={SignupScreen}
         options={{
           headerShown: true,
           headerBackTitle: 'back',
