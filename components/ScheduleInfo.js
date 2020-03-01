@@ -31,7 +31,10 @@ const ScheduleInfo = ({ schedules, handleProfileData }) => {
         }
 
     return (
-        <View>
+        <View style={{ justifyContent: 'center', flex: 1, marginHorizontal: 10, textAlign: 'center' }}>
+            <Text style={styles.title}>
+                Schedule
+            </Text>
             {
                 scheduleData.map((day, key) => (
                     <ListItem key={day.id} >
@@ -45,5 +48,13 @@ const ScheduleInfo = ({ schedules, handleProfileData }) => {
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    title: {
+        fontSize: 22,
+        textAlign: 'center',
+        marginVertical: 10
+    },
+})
 
 export default ScheduleInfo;

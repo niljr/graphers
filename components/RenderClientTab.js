@@ -7,14 +7,14 @@ import Portfolio from './Portfolio';
 
 const RenderClientTab = ({ profileData, portfolio_url, handleProfileData, openImagePickerAsync }) => {
     return (
-        <div>
-            <Tab heading="Schedule">
+        <View>
+            <Tab heading="BasicInfo">
                 <BasicInfo
                     handleProfileData={handleProfileData}
                     profileData={profileData}
                     openImagePickerAsync={openImagePickerAsync} />
             </Tab>
-        </div>
+        </View>
     )
 }
 

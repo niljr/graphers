@@ -8,6 +8,9 @@ import GalleryList from './GalleryList';
 const Portfolio = ({ handleProfileData, portfolio_url, openImagePickerAsync }) => {
     return (
         <View style={styles.container}>
+            <Text style={styles.title}>
+                Portfolio
+            </Text>
             <Image source={{ uri: portfolio_url }} style={styles.logo} />
             <Text style={styles.instructions}>
                 To share a photo from your phone with a friend, just press the button below!
@@ -45,6 +48,11 @@ const styles = StyleSheet.create({
         width: 305,
         height: 159,
         marginBottom: 20,
+    },
+    title: {
+        fontSize: 22,
+        textAlign: 'center',
+        marginVertical: 10
     },
     instructions: {
         color: '#888',

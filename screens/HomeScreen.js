@@ -7,7 +7,7 @@ import firebase from 'firebase'
 import '@firebase/firestore';
 import { MonoText } from '../components/StyledText';
 import Home from '../components/Home';
-
+import GrapherHome from '../components/GrapherHome';
 // static.navigationOptions = {
 //   header: null,
 // };
@@ -60,6 +60,22 @@ const HomeScreen = (props) => {
     // });
   }
 
+  // const queryMyBookings = () => {
+  //   const docRef = firebase.firestore().collection("bookings");
+  //   docRef.where('grapher', '==', 'photographer').get().then(function (querySnapshot) {
+  //     let graphersArr = [];
+  //     querySnapshot.forEach(function (doc) {
+  //       // doc.data() is never undefined for query doc snapshots
+  //       let data = doc.data();
+  //       graphersArr.push(data)
+  //       // console.log(doc.id, " => ", doc.data());
+  //     });
+  //     setGraphers(graphersArr);
+  //   }).catch(function (error) {
+  //     console.log("Error getting document:", error);
+  //   });
+  // }
+
   onRefresh = () => {
     setRefresh(true)
     queryGraphersList();
@@ -84,7 +100,7 @@ const HomeScreen = (props) => {
         }
       >
         <Container style={styles.container}>
-          <Header>
+          <Header backgroundColor="teal">
             <Left>
               <Button transparent onPress={() => props.navigation.navigate('BookModalScreen')}>
                 <Icon name="search" />
@@ -96,8 +112,8 @@ const HomeScreen = (props) => {
             </Right>
           </Header>
 
-
-          <Home nextScreen={nextScreen} graphers={graphers} />
+          {/* <Home nextScreen={nextScreen} graphers={graphers} /> */}
+          <GrapherHome navigation={props.navigation} />
         </Container>
       </ScrollView>
     </View>
@@ -137,7 +153,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // marginHorizontal: 5,
-    backgroundColor: '#fff',
+    backgroundColor: 'teal',
     marginTop: 22,
 
   },

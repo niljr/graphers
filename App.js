@@ -13,6 +13,8 @@ import LoginScreen from './screens/LoginScreen';
 import LoadingScreen from './screens/LoadingScreen';
 import UserRoleScreen from './screens/UserRoleScreen';
 import BookModalScreen from './screens/BookModalScreen';
+import SignUpScreen from './screens/SignUpScreen';
+import BookingModalScreen from './screens/BookingModalScreen';
 import GrapherInfoScreen from './screens/GrapherInfoScreen';
 import Config from './config';
 
@@ -67,6 +69,7 @@ export default function App(props) {
           <RootStack.Navigator mode="modal" screenOptions={{ headerShown: false }} >
             <RootStack.Screen name="Main" component={MainStackScreen} options={{ headerShown: false }} />
             <RootStack.Screen name="BookModalScreen" component={BookModalScreen} />
+            <RootStack.Screen name="BookingModalScreen" component={BookingModalScreen} />
           </RootStack.Navigator>
         </NavigationContainer>
       </View>
@@ -79,6 +82,12 @@ const MainStackScreen = () => {
       <MainStack.Screen name="LoadingScreen" component={LoadingScreen} />
       <MainStack.Screen name="LoginScreen" component={LoginScreen} />
       <MainStack.Screen name="UserRoleScreen" component={UserRoleScreen} />
+      <MainStack.Screen name="SignUpScreen" component={SignUpScreen}
+        options={{
+          headerShown: true,
+          headerBackTitle: 'back',
+          headerTitle: 'Sign up'
+        }} />
       <MainStack.Screen name="GrapherInfoScreen" component={GrapherInfoScreen} />
       <MainStack.Screen name="HomeScreen" component={BottomTabNavigator} />
     </MainStack.Navigator>

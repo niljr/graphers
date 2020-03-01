@@ -13,17 +13,18 @@ const Profile = ({ profileData, handleProfileData, openImagePickerAsync }) => {
 
     return (
         <Tabs>
-            <Tab heading="Basic">
+            <Tab heading="Profile Data">
                 <BasicInfo
                     handleProfileData={handleProfileData}
                     profileData={profileData}
                     openImagePickerAsync={openImagePickerAsync} />
                 {
                     profileData.role === 'client' ?
-                        <RenderClientTab
-                            handleProfileData={handleProfileData}
-                            profileData={profileData}
-                            openImagePickerAsync={openImagePickerAsync} />
+                        // <RenderClientTab
+                        //     handleProfileData={handleProfileData}
+                        //     profileData={profileData}
+                        //     openImagePickerAsync={openImagePickerAsync} />
+                        null
                         :
                         <RenderGrapherTab
                             handleProfileData={handleProfileData}
