@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, AsyncStorage } from 'react-native';
 import firebase from 'firebase'
 import '@firebase/firestore';
 
@@ -10,7 +10,7 @@ const LoadingScreen = props => {
         // props.navigation.navigate('HomeScreen');
     }, [])
 
-    const checkIfLoggedin = () => {
+    const checkIfLoggedin = async () => {
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
                 const docRef = firebase.firestore().collection("users").doc(user.providerData[0].uid);

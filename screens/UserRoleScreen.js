@@ -7,32 +7,45 @@ import '@firebase/firestore';
 const UserRoleScreen = (props) => {
     const [modalCategory, setModalCategory] = useState(false);
     const [category, setCategory] = useState('');
-    const { email, id, givenName, familyName, photoUrl } = props.route.params.user;
+    // const { email, id, givenName, familyName, photoUrl } = props.route.params.user;
 
     userRole = async (role) => {
-        const docRef = await firebase.firestore().collection("users").doc(id);
-        docRef.get().then((doc) => {
-            if (doc.data().role) {
-                props.navigation.navigate('HomeScreen');
-            } else {
-                firebase.firestore().collection("users").doc(id).set({
-                    id,
-                    firstName: givenName,
-                    lastName: familyName,
-                    email: email,
-                    avatar: photoUrl,
-                    rate: '',
-                    role,
-                    category,
-                    createdAt: Date.now()
-                })
+        // const { user } = props.route.params;
 
-                // doc.data() will be undefined in this case
-                // props.navigation.navigate('UserRoleScreen');
-            }
-        }).catch(function (error) {
-            console.log("Error getting document:", error);
-        });
+        // firebase.firestore().collection("users").doc(id).set({
+        //     firstName: user.givenName,
+        //     lastName: user.familyName,
+        //     email: user.email,
+        //     avatar: user.photoUrl,
+        //     rate: '',
+        //     role: '',
+        //     category: '',
+        //     createdAt: Date.now()
+        // });
+
+        // const docRef = await firebase.firestore().collection("users").doc(id);
+        // docRef.get().then((doc) => {
+        //     if (doc.data().role) {
+        //         props.navigation.navigate('HomeScreen');
+        //     } else {
+        //         firebase.firestore().collection("users").doc(id).set({
+        //             id,
+        //             firstName: givenName,
+        //             lastName: familyName,
+        //             email: email,
+        //             avatar: photoUrl,
+        //             rate: '',
+        //             role,
+        //             category,
+        //             createdAt: Date.now()
+        //         })
+
+        //         // doc.data() will be undefined in this case
+        //         // props.navigation.navigate('UserRoleScreen');
+        //     }
+        // }).catch(function (error) {
+        //     console.log("Error getting document:", error);
+        // });
     }
 
     handleData = async (d) => {

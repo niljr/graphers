@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { StyleSheet, Text, View, Button } from 'react-native'
 import * as Google from 'expo-google-app-auth';
 import firebase from 'firebase'
 import '@firebase/firestore';
 
 export default function LoginScreen(props) {
-
+    
     isUserEqual = (googleUser, firebaseUser) => {
         if (firebaseUser) {
             var providerData = firebaseUser.providerData;
@@ -50,31 +50,25 @@ export default function LoginScreen(props) {
         });
     }
 
-    signInWithGoogleAsync = async () => {
+    signInWithGoogleAsync = async (route) => {
         try {
             const result = await Google.logInAsync({
                 behavior: 'web',
                 androidClientId: '1078967101623-lsifqfv1n08alasjph7f97ns7ctsh13a.apps.googleusercontent.com',
-                // iosClientId: YOUR_CLIENT_ID_HERE,
+                iosClientId: '1078967101623-65i52f4327ojoam19ff7s537t2furdeb.apps.googleusercontent.com',
                 scopes: ['profile', 'email'],
             });
 
             if (result.type === 'success') {
-                onSignIn(result);
-                const { email, id, givenName, familyName, photoUrl } = result.user;
-                firebase.firestore().collection("users").doc(id).set({
-                    firstName: givenName,
-                    lastName: familyName,
-                    email: email,
-                    avatar: photoUrl,
-                    rate: '',
-                    role: '',
-                    category: '',
-                    createdAt: Date.now()
+                if (route === 'login') {
+                    onSignIn(result);
+                }
+
+                props.navigation.navigate(route === 'login' ? 'HomeScreen' : 'SignupScreen', {
+                    user: result.user,
+                    result
                 });
-                props.navigation.navigate("UserRoleScreen", {
-                    user: result.user
-                });
+
                 return result.accessToken;
             } else {
                 return { cancelled: true };
@@ -86,7 +80,17 @@ export default function LoginScreen(props) {
 
     return (
         <View style={styles.container}>
-            <Button title='Sign in With Google' onPress={signInWithGoogleAsync} />
+            <View style={styles.container}>
+                <Button title='Log in With Google' onPress={() => signInWithGoogleAsync('login')} />
+            </View>
+            
+            <View style={styles.signupContainer}>
+                <Text style={styles.signupText}>New to Grapher?</Text>
+                <Button
+                    title='Sign in With Google'
+                    onPress={() => signInWithGoogleAsync('signup')}
+                    style={{ fontSize: '10px' }} />
+            </View>
         </View>
     )
 }
@@ -97,5 +101,17 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    signupContainer: {
+        borderTopWidth: 1,
+        borderTopColor: 'lightgray',
+        width: '100%',
+        paddingVertical: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row'
+    },
+    signupText: {
+        color: 'gray'
     }
 })
