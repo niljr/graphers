@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, ToastAndroid, ActivityIndicator } from 'react-native';
+import { View, ToastAndroid, ActivityIndicator, Alert, StyleSheet } from 'react-native';
 import { Container, Header, Content, Button, Text, Tabs, Tab, Left, Body, Right, Icon, Spinner } from 'native-base';
 import * as ImagePicker from 'expo-image-picker';
 import firebase from 'firebase'
@@ -67,9 +67,6 @@ const ProfileScreen = () => {
         }
 
         let pickerResult = await ImagePicker.launchImageLibraryAsync({
-            // allowsEditing: true,
-            // base64: true,
-            // aspect: [4, 3]
         });
 
         if (pickerResult.cancelled === true) {
@@ -111,72 +108,92 @@ const ProfileScreen = () => {
             ...profile,
             portfolio_url: portfolioDataUrl.url
         })
-        // const data = await UploadImage(profile.portfolio)
     };
 
     handleSave = async (result) => {
-
         setLoading(true);
         handleUpload();
-        try {
-            await firebase.firestore().collection("users").doc(userId).set({
-                ...profile
-            })
-            ToastAndroid.showWithGravityAndOffset(
-                'Successfully Saved!',
-                ToastAndroid.LONG,
-                ToastAndroid.TOP,
-                25,
-                50
-            );
-        } catch (err) {
-            console.log(err)
-        }
-        setLoading(false);
+        Alert.alert(
+            '',
+            'Confirm Saving?',
+            [
+                { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+                {
+                    text: 'Confirm', onPress: async () => (
+                        await firebase.firestore().collection("users").doc(userId).set({
+                            ...profile
+                        })
+                    )
+                },
+            ],
+            { cancelable: false }
+        )
+    }
+
+    const logout = () => {
+        Alert.alert(
+            '',
+            'Logout?',
+            [
+                { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+                {
+                    text: 'Confirm', onPress: () => {
+                        firebase.auth().signOut()
+                    }
+                },
+            ],
+            { cancelable: false }
+        )
     }
 
     return (
-        <View style={{ flex: 1 }}>
-            <Container >
-                <Header style={{ marginTop: 24 }}>
-                    <Left>
-                        <Button transparent onPress={() => firebase.auth().signOut()}>
-                            <Icon name='log-out' />
-                        </Button>
-                    </Left>
-                    <Right>
-                        <Button transparent onPress={handleSave}>
-                            <Icon name='save' />
-                            <Text>Save</Text>
-                        </Button>
-                    </Right>
-                </Header>
-                <Content >
-                    {setLoading ?
-                        <ActivityIndicator
-                            style={{
-                                flex: 1,
-                                left: 0,
-                                right: 0,
-                                top: 0,
-                                bottom: 0,
-                                position: 'absolute',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}
-                            size="large"
-                        />
-                        : null}
-                    <Profile
-                        handleProfileData={handleProfileData}
-                        profileData={profile}
-                        openImagePickerAsync={openImagePickerAsync} />
-                    {loading ? <Spinner color='blue' /> : null}
-                </Content>
-            </Container>
-        </View >
+        <Container style={styles.container}>
+            <Header transparent style={styles.header}  >
+                <Left>
+                    <Button transparent onPress={logout}>
+                        <Icon name='log-out' />
+                    </Button>
+                </Left>
+                <Right>
+                    <Button transparent onPress={handleSave}>
+                        {/* <Icon name='save' /> */}
+                        <Text>Save</Text>
+                    </Button>
+                </Right>
+            </Header>
+            <Content  >
+                {setLoading ?
+                    <ActivityIndicator
+                        style={{
+                            flex: 1,
+                            left: 0,
+                            right: 0,
+                            top: 0,
+                            bottom: 0,
+                            position: 'absolute',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}
+                        size="large"
+                    />
+                    : null}
+                <Profile
+                    handleProfileData={handleProfileData}
+                    profileData={profile}
+                    openImagePickerAsync={openImagePickerAsync} />
+                {loading ? <Spinner color='blue' /> : null}
+            </Content>
+        </Container>
     )
 }
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    header: {
+        backgroundColor: "teal"
+    }
+})
 
 export default ProfileScreen;

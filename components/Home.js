@@ -6,6 +6,7 @@ import Grapher from './Grapher';
 const Home = (props) => {
     return (
         <View style={styles.container}>
+            <Text style={styles.title}>LIST OF GRAPHERS</Text>
             <ScrollView contentContainerStyle={styles.contentContainer}>
                 {props.graphers.map((grapher, key) => <Grapher key={key} data={grapher} nextScreen={props.nextScreen} />)}
             </ScrollView>
@@ -20,7 +21,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     contentContainer: {
-        flexGrow: 1,
+        // flexGrow: 1,
+    },
+    title: {
+        textAlign: 'center',
+        fontSize: 20,
+        paddingVertical: 20,
+        color: 'gray'
     }
 });
 

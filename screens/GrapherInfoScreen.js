@@ -13,7 +13,7 @@ const GrapherInfoScreen = (props) => {
         setGrapherInfo(props.route.params.grapherData)
     }, [])
 
-    console.log(props)
+    console.log('grapherInfo', grapherInfo)
 
     const handleBooking = async () => {
         let bookingId = await new Date().getTime();
@@ -23,9 +23,11 @@ const GrapherInfoScreen = (props) => {
         try {
             await firebase.firestore().collection("booking").doc(bookingId.toString(8)).set({
                 grapher: grapherInfo.id,
-                clientId,
+                clientId: clientId,
                 isApprove: false,
-                isDone: false
+                isDone: false,
+                id: bookingId.toString(8),
+                budget: grapherInfo.rate
             })
             ToastAndroid.showWithGravityAndOffset(
                 'Successfully Saved!',

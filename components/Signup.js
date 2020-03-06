@@ -4,7 +4,7 @@ import { Button } from 'native-base';
 // // import Swiper from 'react-native-swiper'
 
 const Signup = ({ user, handleUserUpdate, handleSave }) => {
-    console.log(user)
+    // console.log(user)
     return (
         <View style={styles.container}>
             <Image source={{ uri: user.avatar }} style={styles.logo} />

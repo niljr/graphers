@@ -12,29 +12,29 @@ import RenderClientTab from './RenderClientTab';
 const Profile = ({ profileData, handleProfileData, openImagePickerAsync }) => {
 
     return (
-        <Tabs>
-            <Tab heading="Profile Data">
-                <BasicInfo
-                    handleProfileData={handleProfileData}
-                    profileData={profileData}
-                    openImagePickerAsync={openImagePickerAsync} />
-                {
-                    profileData.role === 'client' ?
-                        // <RenderClientTab
-                        //     handleProfileData={handleProfileData}
-                        //     profileData={profileData}
-                        //     openImagePickerAsync={openImagePickerAsync} />
-                        null
-                        :
-                        <RenderGrapherTab
-                            handleProfileData={handleProfileData}
-                            profileData={profileData}
-                            openImagePickerAsync={openImagePickerAsync} />
-                }
+        <View >
+            {/* <Tab heading="Profile Data" activeTabStyle={{ backgroundColor: 'teal' }} > */}
+            <BasicInfo
+                handleProfileData={handleProfileData}
+                profileData={profileData}
+                openImagePickerAsync={openImagePickerAsync} />
+            {
+                profileData.role === 'client' ?
+                    // <RenderClientTab
+                    //     handleProfileData={handleProfileData}
+                    //     profileData={profileData}
+                    //     openImagePickerAsync={openImagePickerAsync} />
+                    null
+                    :
+                    <RenderGrapherTab
+                        handleProfileData={handleProfileData}
+                        profileData={profileData}
+                        openImagePickerAsync={openImagePickerAsync} />
+            }
 
-            </Tab>
+            {/* </Tab> */}
 
-        </Tabs>
+        </View>
     )
 }
 

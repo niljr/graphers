@@ -6,7 +6,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import firebase from 'firebase'
-
+import { Provider } from 'react-redux'
+import { createStore, combineReducers } from 'redux'
+import * as reducers from './redux';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import useLinking from './navigation/useLinking';
 import LoginScreen from './screens/LoginScreen';
@@ -24,11 +26,24 @@ const RootStack = createStackNavigator();
 firebase.initializeApp(Config);
 const db = firebase.firestore()
 
-export default function App(props) {
+const appReducer = combineReducers({ ...reducers });
+const store = createStore(appReducer);
+
+export default function Wrapper() {
+  return (
+    <Provider store={store}>
+      <App />
+    </Provider>
+  )
+}
+
+function App(props) {
   const [isLoadingComplete, setLoadingComplete] = React.useState(false);
   const [initialNavigationState, setInitialNavigationState] = React.useState();
   const containerRef = React.useRef();
   const { getInitialState } = useLinking(containerRef);
+
+  console.disableYellowBox = true;
 
   // Load any resources or data that we need prior to rendering the app
   React.useEffect(() => {

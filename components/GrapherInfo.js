@@ -1,9 +1,18 @@
 import React from 'react'
-import { Image, StyleSheet, Alert } from 'react-native';
+import { Image, StyleSheet, Alert, View } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Title } from 'native-base';
 
 const GrapherInfo = (props) => {
-    const { avatar, firstName, lastName, portfolio_url, rate, category, id } = props.grapherInfo;
+    const { avatar, firstName, lastName, portfolio_url, rate, category, id, schedules } = props.grapherInfo;
+    const scheduleData = [
+        { id: 0, value: 'Sunday' },
+        { id: 1, value: 'Monday' },
+        { id: 2, value: 'Tuesday' },
+        { id: 3, value: 'Wednesday' },
+        { id: 4, value: 'Thursday' },
+        { id: 5, value: 'Friday' },
+        { id: 6, value: 'Saturday' }
+    ]
 
     const confirmBooking = () => {
         Alert.alert(
@@ -11,15 +20,24 @@ const GrapherInfo = (props) => {
             'Confirm Booking?',
             [
                 { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-                { text: 'Confirm', onPress: () => props.handleBooking() },
+                {
+                    text: 'Confirm', onPress: () => {
+                        props.handleBooking()
+                        props.navigation.goBack();
+                    }
+                },
             ],
             { cancelable: false }
         )
     }
+    console.log(schedules)
+    // console.log('schedules', scheduleData.filter(sched => schedules.indexOf(sched.id) > 0))
+
+    // const availablDays = scheduleData.filter(sched => schedules.indexOf(sched.id) >= 0)
 
     return (
         <Container style={styles.container}>
-            <Header style={styles.header}>
+            <Header transparent style={styles.header}>
                 <Left>
                     <Button transparent onPress={() => props.navigation.goBack()}>
                         <Icon name='arrow-back' />
@@ -49,12 +67,26 @@ const GrapherInfo = (props) => {
                         <Body>
                             <Image source={{ uri: portfolio_url }} style={{ height: 300, width: '100%', flex: 1 }} />
                             <CardItem>
-                                <Icon active name="pin" />
-                                <Text>address</Text>
+                                {
+                                    // availablDays.map((day, key) => {
+                                    //     <View key={key}>
+                                    //         <Text>day.value</Text>
+                                    //     </View>
+                                    // })
+                                }
                             </CardItem>
-                            <CardItem>
-                                <Icon name="cash" />
-                                <Text>P 3,000.00</Text>
+
+                            {schedules
+                                ? <CardItem style={{ paddingBottom: 0 }}>
+                                    {scheduleData
+                                        .filter(d => schedules.includes(d.id))
+                                        .map((item, i) => <Text>{item.value}{i === schedules.length - 1 ? '' : ' | '}</Text>)}
+                                </CardItem>
+                                : null
+                            }
+
+                            <CardItem style={{ paddingTop: 0 }}>
+                                <Text>RATES: </Text><Text style={styles.rate}>₱ {rate}</Text>
                             </CardItem>
                         </Body>
                     </CardItem>
@@ -79,11 +111,17 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     header: {
-        marginTop: 24
+        // marginTop: 24,
+        backgroundColor: 'teal'
     },
     details: {
         marginTop: 10
-    }
+    },
+    rate: {
+        fontSize: 20,
+        color: 'red',
+        fontStyle: 'italic'
+    },
 });
 
 

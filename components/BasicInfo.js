@@ -11,36 +11,36 @@ const BasicInfo = ({ handleProfileData, profileData, openImagePickerAsync }) => 
                     Upload your Avatar
                     </Text>
 
-                <Button onPress={() => openImagePickerAsync('avatar')} style={styles.button}>
+                <Button bordered onPress={() => openImagePickerAsync('avatar')} style={styles.button}>
                     <Text style={styles.buttonText}>Pick a photo</Text>
                 </Button>
 
-                <Item rounded style={styles.item}>
+                <Item regular style={styles.item}>
                     <Input
-                        onChangeText={(firstName) => handleProfileData('firstName', { ...profileData, firstName })}
+                        onChangeText={(firstName) => handleProfileData('firstName', firstName)}
                         placeholder='First Name'
                         style={styles.input}
                         value={profileData.firstName} />
                 </Item>
-                <Item rounded style={styles.item}>
+                <Item regular style={styles.item}>
                     <Input
-                        onChangeText={(lastName) => handleProfileData('lastName', { ...profileData, lastName })}
+                        onChangeText={(lastName) => handleProfileData('lastName', lastName)}
                         placeholder='Last Name'
                         style={styles.input}
                         value={profileData.lastName}
                     />
                 </Item>
-                <Item rounded style={styles.item}>
+                <Item regular style={styles.item}>
                     <Input
-                        onChangeText={(address) => handleProfileData('address', { ...profileData, address })}
+                        onChangeText={(address) => handleProfileData('address', address)}
                         placeholder='Address'
                         style={styles.input}
                         value={profileData.address}
                     />
                 </Item>
-                <Item rounded style={styles.item}>
+                <Item regular style={styles.item}>
                     <Input
-                        onChangeText={(rate) => handleProfileData('rate', { ...profileData, rate })}
+                        onChangeText={(rate) => handleProfileData('rate', rate)}
                         placeholder='Rate'
                         style={styles.input}
                         type='number'
@@ -66,19 +66,21 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     button: {
-        backgroundColor: 'blue',
-        padding: 20,
-        borderRadius: 5,
-        marginHorizontal: 70,
         marginVertical: 10,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '60%',
+        color: 'teal',
+        borderColor: 'teal'
     },
     buttonText: {
         fontSize: 20,
-        color: '#fff',
+        color: 'teal',
     },
     item: {
-        marginVertical: 5
+        marginVertical: 5,
+        borderColor: 'teal',
+        width: '90%'
     },
     input: {
         marginVertical: 1,

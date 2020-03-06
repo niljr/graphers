@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Image, TouchableOpacity } from 'react-native'
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, } from 'native-base';
+import { View, Image, StyleSheet } from 'react-native'
+import { ListItem, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, } from 'native-base';
 import GrapherInfo from './GrapherInfo';
 
 const Grapher = (props) => {
@@ -12,40 +12,36 @@ const Grapher = (props) => {
 
     return (
         <View style={{ flex: 1 }}>
-            <TouchableOpacity onPress={() => props.nextScreen('GrapherInfoScreen', props.data)}>
-                <Card>
-                    <CardItem>
-                        <Left>
-                            <Thumbnail source={{ uri: avatar }} />
-                            <Body>
-                                <Text>{firstName} {lastName}</Text>
-                                <Text note>{category}</Text>
-                            </Body>
-                        </Left>
-                    </CardItem>
-                    <CardItem cardBody>
-                        <Image source={{ uri: portfolio_url }} style={{ height: 150, flex: 1 }} />
-                    </CardItem>
-                    <CardItem>
-                        <Left>
-                            <Button transparent>
-                                <Icon active name="thumbs-up" />
-                                <Text>Rating: 5</Text>
-                            </Button>
-                        </Left>
-                        {/* <Body>
-                        <Button transparent>
-                            <Icon active name="chatbubbles" />
-                            <Text>4 Comments</Text>
-                        </Button>
-                    </Body> */}
-                        <Right>
-                            <Text>Rate: {rate}</Text>
-                        </Right>
-                    </CardItem>
-                </Card>
-            </TouchableOpacity>
+            <ListItem thumbnail>
+                <Left>
+                    <Thumbnail square source={{ uri: avatar }} />
+                </Left>
+                <Body>
+                    <Text>{firstName} {lastName}</Text>
+                    <Text note numberOfLines={1}>{category}</Text>
+                    <Text style={styles.rate}>₱ {rate.toFixed(3)}</Text>
+                </Body>
+                <Right>
+                    <Button bordered style={styles.button} onPress={() => props.nextScreen('GrapherInfoScreen', props.data)}>
+                        {/* <Icon name='md-eye' style={{ fontSize: 20, color: 'teal' }} /> */}
+                        <Text style={styles.view}>View</Text>
+                    </Button>
+                </Right>
+            </ListItem>
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    rate: {
+        color: 'red',
+        fontStyle: 'italic'
+    },
+    button: {
+        borderColor: 'teal'
+    },
+    view: {
+        color: 'teal'
+    }
+})
 export default Grapher; 

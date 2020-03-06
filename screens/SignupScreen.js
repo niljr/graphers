@@ -4,7 +4,10 @@ import { Text } from 'react-native';
 import { Button } from 'native-base';
 import firebase from 'firebase'
 
-const SignupScreen = ({ navigation, route: { params } }) => {
+import { connect } from 'react-redux'
+import { setUser } from '../redux/modules/user';
+
+const SignupScreen = ({ navigation, route: { params }, dispatch }) => {
     const [user, setUser] = useState({
         id: params.user.id,
         firstName: params.user.givenName,
@@ -20,11 +23,11 @@ const SignupScreen = ({ navigation, route: { params } }) => {
         const isDisabled = !user.role || user.role === 'grapher' && !user.category;
 
         navigation.setOptions({
-          headerRight: () => (
-            <Button transparent style={{ paddingRight: 10 }} disabled={isDisabled} onPress={handleSave}>
-                <Text style={{ color: isDisabled ? 'gray' : 'black' }}>Submit</Text>
-            </Button>
-          ),
+            headerRight: () => (
+                <Button transparent style={{ paddingRight: 10 }} disabled={isDisabled} onPress={handleSave}>
+                    <Text style={{ color: isDisabled ? 'gray' : 'black' }}>Submit</Text>
+                </Button>
+            ),
         });
     }, [navigation, user]);
 
@@ -55,6 +58,7 @@ const SignupScreen = ({ navigation, route: { params } }) => {
         return false;
     }
 
+    console.log('')
     const handleSave = () => {
         // We need to register an Observer on Firebase Auth to make sure auth is initialized.
         var unsubscribe = firebase.auth().onAuthStateChanged(async (firebaseUser) => {
@@ -87,6 +91,9 @@ const SignupScreen = ({ navigation, route: { params } }) => {
                 });
 
             }
+
+            dispatch(setUser(user));
+
             navigation.navigate('HomeScreen', user);
         });
     }
@@ -94,7 +101,7 @@ const SignupScreen = ({ navigation, route: { params } }) => {
     return <Signup
         user={user}
         handleUserUpdate={handleUserUpdate}
-        handleSave={handleSave}/>;
+        handleSave={handleSave} />;
 }
 
-export default SignupScreen;
+export default connect()(SignupScreen);

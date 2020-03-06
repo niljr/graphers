@@ -1,84 +1,91 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View, RefreshControl } from 'react-native';
+import { StyleSheet, Text, View, RefreshControl } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Container, Header, Right, Icon, Button, Left, Thumbnail } from 'native-base';
 import * as WebBrowser from 'expo-web-browser';
 import firebase from 'firebase'
 import '@firebase/firestore';
+import { connect } from 'react-redux';
+import { useRoute } from '@react-navigation/native';
+
 import { MonoText } from '../components/StyledText';
 import Home from '../components/Home';
 import GrapherHome from '../components/GrapherHome';
-// static.navigationOptions = {
-//   header: null,
-// };
+
+
 const HomeScreen = (props) => {
   const [refresh, setRefresh] = useState(false);
   const [isBook, setIsBook] = useState(false);
   const [graphers, setGraphers] = useState([]);
+  const [clients, setClients] = useState([]);
+  const [filters, setFilter] = useState({
+    category: '',
+    price: '',
+    date: null
+  });
+  const [currentUser, setCurrentUser] = useState({
+    ...props.route.params
+  });
   const [userUri, setUserUri] = useState('../assets/images/icon.png');
-
-  // useEffect(() => {
-  //   firebase.auth().onAuthStateChanged(async user => {
-  //     if (user) {
-  //       const docRef = await db.collection("users").doc(user.providerData[0].uid);
-  //       docRef.get().then(function (doc) {
-  //         setUserUri(doc.data().basicInfoData.downloadUrl);
-  //       }).catch(function (error) {
-  //         console.log("Error getting document:", error);
-  //       });
-  //     } else {
-  //       props.navigation.navigate('LoginScreen');
-  //     }
-  //   })
-  // }, []);
-
+  const route = useRoute();
 
   useEffect(() => {
+    queryClientsList();
+    queryAllGrapheres()
+
+  }, []);
+
+  const queryAllGrapheres = () => {
     const docRef = firebase.firestore().collection("users");
-    docRef.where('category', '==', 'photographer').get().then(function (querySnapshot) {
+    docRef.where('category', 'in', ['photographer', 'videographer']).get().then(function (querySnapshot) {
       let graphersArr = [];
       querySnapshot.forEach(function (doc) {
-        // doc.data() is never undefined for query doc snapshots
         let data = doc.data();
         graphersArr.push(data)
-        // console.log(doc.id, " => ", doc.data());
       });
       setGraphers(graphersArr);
     }).catch(function (error) {
       console.log("Error getting document:", error);
     });
-  }, []);
-
-  queryGraphersList = async () => {
-    // const docRef = await firebase.firestore().collection("users");
-    // docRef.where('category', '==', 'photographer').get().then(function (querySnapshot) {
-    //   querySnapshot.forEach(function (doc) {
-    //     // doc.data() is never undefined for query doc snapshots
-    //   });
-    // }).catch(function (error) {
-    //   console.log("Error getting document:", error);
-    // });
   }
 
-  // const queryMyBookings = () => {
-  //   const docRef = firebase.firestore().collection("bookings");
-  //   docRef.where('grapher', '==', 'photographer').get().then(function (querySnapshot) {
-  //     let graphersArr = [];
-  //     querySnapshot.forEach(function (doc) {
-  //       // doc.data() is never undefined for query doc snapshots
-  //       let data = doc.data();
-  //       graphersArr.push(data)
-  //       // console.log(doc.id, " => ", doc.data());
-  //     });
-  //     setGraphers(graphersArr);
-  //   }).catch(function (error) {
-  //     console.log("Error getting document:", error);
-  //   });
-  // }
 
-  onRefresh = () => {
+  const queryGraphersList = (data) => {
+    setFilter(data);
+  }
+
+  const queryClientsList = () => {
+    const docRef = firebase.firestore().collection("booking");
+    docRef.where('grapher', '==', props.user.id).get().then(function (querySnapshot) {
+      let clientsArr = [];
+      querySnapshot.forEach(function (doc) {
+        let data = doc.data();
+        clientsArr.push(data)
+      });
+      setClients(clientsArr);
+    }).catch(function (error) {
+      console.log("Error getting document:", error);
+    });
+  }
+
+  const queryClientInfo = async (id) => {
+    if (id) {
+      const info = await firebase.firestore().collection('users').doc(id.toString(8))
+        .get().then((doc) => {
+          const d = doc.data();
+          return d;
+        }).catch(function (error) {
+          console.log("Error getting document:", error);
+        });
+      return info
+    } else {
+      return;
+    }
+  }
+
+  const onRefresh = () => {
     setRefresh(true)
-    queryGraphersList();
+    queryAllGrapheres();
     setRefresh(false)
   }
 
@@ -88,6 +95,16 @@ const HomeScreen = (props) => {
     });
   }
 
+  const grapherList = (
+    (filters.category || filters.price || filters.date)
+      ? graphers.filter(g => (
+        g.category === filters.category ||
+        g.rate < filters.price ||
+        (filters.date && g.schedules.includes(filters.date))))
+      : graphers
+  )
+
+  console.log('--', props)
   return (
     <View >
       <ScrollView
@@ -100,61 +117,50 @@ const HomeScreen = (props) => {
         }
       >
         <Container style={styles.container}>
-          <Header backgroundColor="teal">
-            <Left>
-              <Button transparent onPress={() => props.navigation.navigate('BookModalScreen')}>
-                <Icon name="search" />
-                <Text>Book</Text>
-              </Button>
-            </Left>
+          <Header transparent>
+            {
+              props.user.role !== 'grapher' ? <Left>
+                <Button transparent onPress={() => props.navigation.navigate('BookModalScreen', {
+                  queryGraphersList,
+                  filters
+                })}>
+                  <Icon name="funnel" />
+                  <Text style={{ color: 'white', paddingLeft: 10 }}>Filter  </Text>
+                </Button>
+              </Left> : null
+            }
+
             <Right>
-              <Thumbnail small source={{ uri: userUri }} />
+              <Text style={{ color: '#fff', paddingVertical: 10, paddingRight: 10 }}>Hi, {props.user.firstName}</Text>
+              <Thumbnail small source={{ uri: props.user.avatar ? props.user.avatar : props.user.photoUrl }} />
             </Right>
           </Header>
 
-          {/* <Home nextScreen={nextScreen} graphers={graphers} /> */}
-          <GrapherHome navigation={props.navigation} />
+          {props.user.role === 'client' ? <Home nextScreen={nextScreen} graphers={grapherList} queryClientInfo={queryClientInfo} />
+            : <GrapherHome navigation={props.navigation} clientsData={clients} queryClientInfo={queryClientInfo} />}
         </Container>
       </ScrollView>
     </View>
   );
 }
 
-export default HomeScreen
+function mapStateToProps({ user }) {
+  return {
+    user: user.user
+  }
+}
+export default connect(mapStateToProps)(HomeScreen);
 
 HomeScreen.navigationOptions = {
   header: null,
 };
-
-function DevelopmentModeNotice() {
-  if (__DEV__) {
-    const learnMoreButton = (
-      <Text onPress={handleLearnMorePress} style={styles.helpLinkText}>
-        Learn more
-      </Text>
-    );
-
-    return (
-      <Text style={styles.developmentModeText}>
-        Development mode is enabled: your app will be slower but you can use useful development
-        tools. {learnMoreButton}
-      </Text>
-    );
-  } else {
-    return (
-      <Text style={styles.developmentModeText}>
-        You are not in development mode: your app will run at full speed.
-      </Text>
-    );
-  }
-}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     // marginHorizontal: 5,
     backgroundColor: 'teal',
-    marginTop: 22,
+    // marginTop: 22,
 
   },
   contentContainer: {

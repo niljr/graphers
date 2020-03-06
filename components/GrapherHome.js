@@ -12,11 +12,18 @@ import ClientInvites from './ClientInvites';
 
 const GrapherHome = (props) => {
     const [isActive, setIsActive] = useState(1)
+    const [clients, setClients] = useState([
+        ...props.clientsData.filter(client => client.isApprove)
+    ])
 
     const handleActive = (d) => {
         setIsActive(d)
+        if (d === 1) {
+            setClients(props.clientsData.filter(client => client.isApprove));
+        } else {
+            setClients(props.clientsData.filter(client => !client.isApprove));
+        }
     }
-
     return (
         <Container>
             <Segment style={{ backgroundColor: 'teal' }}>
@@ -28,7 +35,17 @@ const GrapherHome = (props) => {
                 </Button>
             </Segment>
             <Content padder>
-                {isActive === 1 ? <MyBookings navigation={props.navigation} /> : <ClientInvites navigation={props.navigation} />}
+                {clients.map((client, key) => {
+                    return isActive === 1 && client.isApprove
+                        ?
+                        <View key={key}>
+                            <MyBookings navigation={props.navigation} client={client} queryClientInfo={props.queryClientInfo} />
+                        </View>
+                        :
+                        <View key={key}>
+                            <ClientInvites navigation={props.navigation} client={client} queryClientInfo={props.queryClientInfo} />
+                        </View>
+                })}
             </Content>
         </Container>
     )

@@ -4,8 +4,11 @@ import * as Google from 'expo-google-app-auth';
 import firebase from 'firebase'
 import '@firebase/firestore';
 
-export default function LoginScreen(props) {
-    
+import { connect } from 'react-redux'
+import { setUser } from '../redux/modules/user';
+
+const LoginScreen = (props) => {
+
     isUserEqual = (googleUser, firebaseUser) => {
         if (firebaseUser) {
             var providerData = firebaseUser.providerData;
@@ -53,7 +56,7 @@ export default function LoginScreen(props) {
     signInWithGoogleAsync = async (route) => {
         try {
             const result = await Google.logInAsync({
-                behavior: 'web',
+                // behavior: 'web',
                 androidClientId: '1078967101623-lsifqfv1n08alasjph7f97ns7ctsh13a.apps.googleusercontent.com',
                 iosClientId: '1078967101623-65i52f4327ojoam19ff7s537t2furdeb.apps.googleusercontent.com',
                 scopes: ['profile', 'email'],
@@ -61,10 +64,20 @@ export default function LoginScreen(props) {
 
             if (result.type === 'success') {
                 if (route === 'login') {
-                    onSignIn(result);
+                    const data = await onSignIn(result);
+                    console.log('loginScreen', data)
+                    dispatch(setUser(data));
+
+                    setTimeout(() => {
+                        props.navigation.navigate('HomeScreen', {
+                            user: data
+                        });
+
+                        return;
+                    }, 300);
                 }
 
-                props.navigation.navigate(route === 'login' ? 'HomeScreen' : 'SignupScreen', {
+                props.navigation.navigate('SignupScreen', {
                     user: result.user,
                     result
                 });
@@ -83,7 +96,7 @@ export default function LoginScreen(props) {
             <View style={styles.container}>
                 <Button title='Log in With Google' onPress={() => signInWithGoogleAsync('login')} />
             </View>
-            
+
             <View style={styles.signupContainer}>
                 <Text style={styles.signupText}>New to Grapher?</Text>
                 <Button
@@ -94,6 +107,8 @@ export default function LoginScreen(props) {
         </View>
     )
 }
+
+export default connect()(LoginScreen);
 
 const styles = StyleSheet.create({
     container: {

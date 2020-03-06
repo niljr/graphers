@@ -17,7 +17,7 @@ export default function BottomTabNavigator({ navigation, route }) {
   return (
     <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
       <BottomTab.Screen
-        name="Graphers"
+        name="Grapher"
         component={HomeScreen}
         options={{
           // title: 'Get Started',
@@ -28,7 +28,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         name="Profile"
         component={ProfileScreen}
         options={{
-          // title: 'Portfolio',
+          // title: 'Portfolio',V
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-person" />,
         }}
       />

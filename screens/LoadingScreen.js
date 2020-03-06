@@ -2,6 +2,8 @@ import React, { useEffect } from 'react'
 import { View, Text, StyleSheet, ActivityIndicator, AsyncStorage } from 'react-native';
 import firebase from 'firebase'
 import '@firebase/firestore';
+import { connect } from 'react-redux'
+import { setUser } from '../redux/modules/user';
 
 const LoadingScreen = props => {
 
@@ -9,19 +11,16 @@ const LoadingScreen = props => {
         checkIfLoggedin();
         // props.navigation.navigate('HomeScreen');
     }, [])
-
     const checkIfLoggedin = async () => {
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
                 const docRef = firebase.firestore().collection("users").doc(user.providerData[0].uid);
                 docRef.get().then(function (doc) {
-                    if (doc.data().role) {
-                        props.navigation.navigate('HomeScreen', {
-                            uri: doc.data().avatar
-                        });
-                    } else {
-                        props.navigation.navigate('UserRoleScreen');
-                    }
+                    props.dispatch(setUser(doc.data()));
+
+                    setTimeout(() => {
+                        props.navigation.navigate('HomeScreen');
+                    }, 300);
                 }).catch(function (error) {
                     console.log("Error getting document:", error);
                 });
@@ -36,7 +35,7 @@ const LoadingScreen = props => {
         </View>
     )
 }
-export default LoadingScreen;
+export default connect()(LoadingScreen);
 
 const styles = StyleSheet.create({
     container: {
